@@ -5,14 +5,17 @@
 #include <initializer_list>
 #include <stdexcept>
 
+#include "Tri.hpp"
+
 namespace fct{
   typedef double R;
   typedef R (*RtoR)(R);
   typedef R (*R2toR)(R, R);
 
   class Function {
-    const int p;
-    const int q;
+    const int p;//dimension of the domain
+    const int q;//dimension of the codomain
+    int deg = 2;//for integral calculus, the function will be seen as a polynomial of degree 'deg'
 
   public:
     Function() = delete;
@@ -28,6 +31,7 @@ namespace fct{
     const int getp() const;
     const int getq() const;
 
+    R integrate(const Tri<2>&);
   };
 
   class LinCbnFct : public Function {
