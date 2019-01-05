@@ -1,23 +1,25 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wfatal-errors
 
-SRC = Function.cpp Tri.cpp ItgQuadForm.cpp
-HEADERS = ntuple.hpp Matrix.hpp
+SRC = Function.cpp Tri.cpp ItgQuadForm.cpp project.cpp
+TEMPL = ntuple.hpp Matrix.hpp Tri.hpp
 
 OBJ = $(SRC:.cpp=.o)
 
-all: $(OBJ)
+all: $(OBJ) $(TEMPL)
 	$(CXX) $(CXXFLAGS) $(OBJ) -o project
 
+project.o: $(TEMPL) ItgQuadForm.hpp Function.hpp
 
+Tri.o: ntuple.hpp Tri.hpp
 
-Tri.o: ntuple.hpp
+ItgQuadForm.o: $(TEMPL) ItgQuadForm.hpp
+	$(CXX) $(CXXFLAGS) -DDIR_COORDS=\"\" -c ItgQuadForm.cpp -o $@
 
-ItgQuadForm.o: ntuple.hpp Matrix.hpp ItgQuadForm.cpp ItgQuadForm.hpp
-	$(CXX) $(CXXFLAGS) -DDIR_COORDS=\"\" -c $< -o $@
+Function.o: Function.hpp $(TEMPL) ItgQuadForm.hpp
 
-%.o: %.cpp %.hpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $*.cpp -o $@
 
 
 

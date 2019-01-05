@@ -65,12 +65,12 @@ Matrix<3, 4>& ItgQuadForm::get_lin_sys(const Tri<2>& tri){
 
   mat(1, 1) = area*(tri[0][0]*(2.*tri[0][1]+tri[1][1]+tri[2][1])
 		   +tri[1][0]*(tri[0][1]+2.*tri[1][1]+tri[2][1])
-		   +tri[2][0]*(tri[0][1]+tri[1][1]+2.*tri[2][1]))/24.;
+		   +tri[2][0]*(tri[0][1]+tri[1][1]+2.*tri[2][1]))/12.;
   mat(2, 0) = mat(1, 1);
 
-  mat(1, 0) = area*(tri[0][0]*tri[0][0] + tri[0][0]*tri[1][0] + tri[0][0]*tri[2][0] + tri[1][0]*tri[1][0] + tri[1][0]*tri[2][0] + tri[2][0]*tri[2][0])/12.;
+  mat(1, 0) = area*(tri[0][0]*tri[0][0] + tri[0][0]*tri[1][0] + tri[0][0]*tri[2][0] + tri[1][0]*tri[1][0] + tri[1][0]*tri[2][0] + tri[2][0]*tri[2][0])/6.;
 
-  mat(2, 1) = area*(tri[0][1]*tri[0][1] + tri[0][1]*tri[1][1] + tri[0][1]*tri[2][1] + tri[1][1]*tri[1][1] + tri[1][1]*tri[2][1] + tri[2][1]*tri[2][1])/12.;
+  mat(2, 1) = area*(tri[0][1]*tri[0][1] + tri[0][1]*tri[1][1] + tri[0][1]*tri[2][1] + tri[1][1]*tri[1][1] + tri[1][1]*tri[2][1] + tri[2][1]*tri[2][1])/6.;
 
   return mat;
 

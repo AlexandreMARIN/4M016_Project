@@ -4,13 +4,18 @@
 #include <vector>
 #include <initializer_list>
 #include <stdexcept>
+#include <cmath>
 
-#include "Tri.hpp"
+#include "ItgQuadForm.hpp"
 
 namespace fct{
   typedef double R;
   typedef R (*RtoR)(R);
   typedef R (*R2toR)(R, R);
+
+
+  void setepsilon(R);
+  R getepsilon();
 
   class Function {
     const int p;//dimension of the domain
@@ -25,13 +30,18 @@ namespace fct{
     virtual ~Function() = default;
 
     virtual std::vector<R> operator()(const std::vector<R>&) const = 0;
+    std::vector<R> operator()(const Tri<2>&);
     Function& operator=(const Function&) = delete;
     Function& operator=(Function&&) = delete;
     virtual Function* clone() const = 0;
     const int getp() const;
     const int getq() const;
+    void setdeg(int);
 
     R integrate(const Tri<2>&);
+    ntuple<3, R> projection_on_P1(const Tri<2>&);
+    R get_E_K(const Tri<2>&, ntuple<3, R>&);
+    std::vector<Tri<2> > exportGnuplot(const std::vector<Tri<2> >&, std::string filename);
   };
 
   class LinCbnFct : public Function {
@@ -104,6 +114,52 @@ namespace fct{
     R2toRCppFct* clone() const override;
 
   };
+
+  class ProdFct : public Function {
+    Function** const fcts;
+    const int nb;
+
+  public:
+    ProdFct() = delete;
+    ProdFct(const ProdFct&);
+    ProdFct(ProdFct&&) = delete;
+    ProdFct(std::initializer_list<Function*>);
+    ~ProdFct();
+
+    std::vector<R> operator()(const std::vector<R>&) const override;
+    ProdFct& operator=(const ProdFct&) = delete;
+    ProdFct& operator=(ProdFct&&) = delete;
+    ProdFct* clone() const override;
+
+  };
+
+  class F_K : public Function {
+    Tri<2> tri;
+
+  public:
+    F_K() = delete;
+    F_K(const F_K&);
+    F_K(F_K&&) = delete;
+    F_K(const Tri<2>&);
+    ~F_K() = default;
+
+    std::vector<R> operator()(const std::vector<R>&) const override;
+    F_K& operator=(const F_K&) = delete;
+    F_K& operator=(F_K&&) = delete;
+    F_K* clone() const override;
+
+  };
+
+  R square(R);
+  R cube(R);
+  R indR2(R, R);
+  R p1(R, R);
+  R p2(R, R);
+  extern RtoRCppFct Square;
+  extern RtoRCppFct Cube;
+  extern R2toRCppFct IndR2;
+  extern R2toRCppFct pr1;
+  extern R2toRCppFct pr2;
 }
 
 #endif
