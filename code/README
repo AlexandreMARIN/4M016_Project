@@ -1,0 +1,21 @@
+PROJET:
+	4M016 Projet 2 visualisation et optimisation de maillage
+	Alexandre MARIN
+
+USAGE:
+
+	./project [eps [nb]]
+
+eps: valeur de epsilon
+nb: nombre minimum de triangles du maillage de [-1, 1]^2
+
+DESCRIPTION:
+
+	Ce programme utilise l'algorithme donné pour raffiner
+	un maillage de [-1, 1]^2 de façon à respecter la contrainte
+	liée à epsilon.
+	Les données permettant de visualiser les fonctions f_1 et
+	f_2 sont enregistrées au format Gnuplot dans les fichiers
+	f_1.data et f_2.data.
+	Des scripts Gnuplot permettent de visualiser ces données.
+
