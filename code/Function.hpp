@@ -38,10 +38,10 @@ namespace fct{
     const int getq() const;
     void setdeg(int);
 
-    R integrate(const Tri<2>&);
-    ntuple<3, R> projection_on_P1(const Tri<2>&);
-    R get_E_K(const Tri<2>&, ntuple<3, R>&);
-    std::vector<Tri<2> > exportGnuplot(const std::vector<Tri<2> >&, std::string filename);
+    R integrate(const Tri<2>&) const;
+    ntuple<3, R> projection_on_P1(const Tri<2>&) const;
+    R get_E_K(const Tri<2>&, ntuple<3, R>&) const;
+    std::vector<Tri<2> > exportGnuplot(const std::vector<Tri<2> >&, const std::string& filename) const;
   };
 
   class LinCbnFct : public Function {
@@ -53,7 +53,7 @@ namespace fct{
     LinCbnFct() = delete;
     LinCbnFct(const LinCbnFct&);
     LinCbnFct(LinCbnFct&&) = delete;
-    LinCbnFct(std::initializer_list<Function*>, std::initializer_list<R>);
+    LinCbnFct(std::initializer_list<const Function*>, std::initializer_list<R>);
     ~LinCbnFct() override;
 
     std::vector<R> operator()(const std::vector<R>&) const override;
@@ -71,7 +71,7 @@ namespace fct{
     CompFct() = delete;
     CompFct(const CompFct&);
     CompFct(CompFct&&) = delete;
-    CompFct(std::initializer_list<Function*>);
+    CompFct(std::initializer_list<const Function*>);
     ~CompFct() override;
 
     std::vector<R> operator()(const std::vector<R>&) const override;
@@ -123,7 +123,7 @@ namespace fct{
     ProdFct() = delete;
     ProdFct(const ProdFct&);
     ProdFct(ProdFct&&) = delete;
-    ProdFct(std::initializer_list<Function*>);
+    ProdFct(std::initializer_list<const Function*>);
     ~ProdFct();
 
     std::vector<R> operator()(const std::vector<R>&) const override;

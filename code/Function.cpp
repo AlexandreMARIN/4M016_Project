@@ -44,7 +44,7 @@ void Function::setdeg(int newdeg){
   }
 }
 
-R Function::integrate(const Tri<2>& tri){
+R Function::integrate(const Tri<2>& tri) const{
   if(getp()!=2 || getq()!=1){
     throw(logic_error("Function::integrate(const Tri<2>&) : the implicit argument must be a function of that sort : R^2 -> R\n"));
   }
@@ -74,7 +74,7 @@ R Function::integrate(const Tri<2>& tri){
   return area*((R)0.5)*integ;
 }
 
-ntuple<3, R> Function::projection_on_P1(const Tri<2>& tri){
+ntuple<3, R> Function::projection_on_P1(const Tri<2>& tri) const{
   Matrix<3, 4>& sys = ItgQuadForm::get_lin_sys(tri);
   Matrix<3, 4> res;
   ntuple<3, R> proj;
@@ -99,7 +99,7 @@ ntuple<3, R> Function::projection_on_P1(const Tri<2>& tri){
   return proj;
 }
 
-R Function::get_E_K(const Tri<2>& tri, ntuple<3, R>& proj){
+R Function::get_E_K(const Tri<2>& tri, ntuple<3, R>& proj) const{
   proj = projection_on_P1(tri);
   LinCbnFct diff({this, &pr1, &pr2, &IndR2}, {-1.0, proj[0], proj[1], proj[2]});
   CompFct err({&Square, &diff});
@@ -107,7 +107,7 @@ R Function::get_E_K(const Tri<2>& tri, ntuple<3, R>& proj){
   return err.integrate(tri);
 }
 
-vector<Tri<2> > Function::exportGnuplot(const vector<Tri<2> >& mesh, string filename){
+vector<Tri<2> > Function::exportGnuplot(const vector<Tri<2> >& mesh, const string& filename) const{
   ofstream file(filename);
   vector<Tri<2> > newmesh((int)(mesh.size()*1.5));
   queue<Tri<2>, list<Tri<2> > > qt;
@@ -203,7 +203,7 @@ LinCbnFct::LinCbnFct(const LinCbnFct& lcf) : Function(lcf.getp(), lcf.getq()), f
 
 }
 
-LinCbnFct::LinCbnFct(initializer_list<Function*> ilf, initializer_list<R> ilr) : Function(ilf.size()?ilf.begin()[0]->getp():(throw(logic_error("LinCbnFct({Function*}, {R}) : at least one function is expected\n"))), ilf.size()?ilf.begin()[0]->getq():0), fcts(new Function*[ilf.size()]), coeffs(new R[ilf.size()]), nb(ilf.size()){
+LinCbnFct::LinCbnFct(initializer_list<const Function*> ilf, initializer_list<R> ilr) : Function(ilf.size()?ilf.begin()[0]->getp():(throw(logic_error("LinCbnFct({Function*}, {R}) : at least one function is expected\n"))), ilf.size()?ilf.begin()[0]->getq():0), fcts(new Function*[ilf.size()]), coeffs(new R[ilf.size()]), nb(ilf.size()){
 
   for(int i=1;i<nb;i++){
     if(getp()!=ilf.begin()[i]->getp() || getq()!=ilf.begin()[i]->getq()){
@@ -259,7 +259,7 @@ CompFct::CompFct(const CompFct& cf) : Function(cf.getp(), cf.getq()), fcts(new F
   }
 }
 
-CompFct::CompFct(initializer_list<Function*> ilf) : Function(ilf.size()?ilf.begin()[ilf.size()-1]->getp():(throw(logic_error("CompFct({Function*}) : at least one function is expected\n")),1), ilf.size()?ilf.begin()[0]->getq():0), fcts(new Function*[ilf.size()]), nb(ilf.size()){
+CompFct::CompFct(initializer_list<const Function*> ilf) : Function(ilf.size()?ilf.begin()[ilf.size()-1]->getp():(throw(logic_error("CompFct({Function*}) : at least one function is expected\n")),1), ilf.size()?ilf.begin()[0]->getq():0), fcts(new Function*[ilf.size()]), nb(ilf.size()){
 
   for(int i=0;i<nb-1;i++){
     if(ilf.begin()[i]->getp() != ilf.begin()[i+1]->getq()){
@@ -351,7 +351,7 @@ ProdFct::ProdFct(const ProdFct& pf) : Function(pf.getp(), pf.getq()), fcts(new F
   }
 }
 
-ProdFct::ProdFct(initializer_list<Function*> ilf) : Function(ilf.size()!=0?ilf.begin()[0]->getp():-1, 1), fcts(new Function*[ilf.size()]), nb(ilf.size()){
+ProdFct::ProdFct(initializer_list<const Function*> ilf) : Function(ilf.size()!=0?ilf.begin()[0]->getp():-1, 1), fcts(new Function*[ilf.size()]), nb(ilf.size()){
 
   if(!ilf.size()){
     throw(invalid_argument("ProdFct({Function*}) : at least one function is expected\n"));

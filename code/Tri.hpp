@@ -20,7 +20,7 @@ public:
   Tri();
   Tri(const Tri&);
   Tri(Tri&&);
-  Tri(ntuple<dim, double>, ntuple<dim, double>, ntuple<dim, double>);
+  Tri(const ntuple<dim, double>&, const ntuple<dim, double>&, const ntuple<dim, double>&);
   template<int dim2> Tri(const Tri<dim2>&);//it will be specialized
   template<int dim2> Tri(const Tri<dim2>&, const std::vector<double>&);//it will be specialized
 
@@ -65,7 +65,7 @@ Tri<dim>::Tri(Tri<dim>&& tri){
 }
 
 template<int dim>
-Tri<dim>::Tri(ntuple<dim, double> a, ntuple<dim, double> b, ntuple<dim, double> c){
+Tri<dim>::Tri(const ntuple<dim, double>& a, const ntuple<dim, double>& b, const ntuple<dim, double>& c){
   vert[0] = a;
   vert[1] = b;
   vert[2] = c;
