@@ -10,7 +10,7 @@ using namespace fct;
 namespace fct{
   static R epsilon = 1e-9;
 }
-constexpr R min_eps = 1e-30;
+constexpr R min_eps = 1e-10;
 
 
 void fct::setepsilon(R e){
@@ -76,7 +76,6 @@ R Function::integrate(const Tri<2>& tri) const{
 
 ntuple<3, R> Function::projection_on_P1(const Tri<2>& tri) const{
   Matrix<3, 4>& sys = ItgQuadForm::get_lin_sys(tri);
-  Matrix<3, 4> res;
   ntuple<3, R> proj;
   vector<ntuple<2, int> > ldgent;
   sys(0, 3) = integrate(tri);
@@ -87,14 +86,17 @@ ntuple<3, R> Function::projection_on_P1(const Tri<2>& tri) const{
   sys(1, 3) = fx.integrate(tri);
   sys(2, 3) = fy.integrate(tri);
 
-  res = sys.gauss(ldgent);
-  if(ldgent.size()<3){
+  Matrix<3, 4> copy = sys;//for the exception below
+
+  sys.gauss(ldgent);
+  if(ldgent.size()<3 || ldgent[0][1]==3 || ldgent[1][1]==3 || ldgent[2][1]==3){
+    cerr << "\nerror in ntuple<3, R> Function::projection_on_P1(const Tri<2>& tri):\n\nprojection on triangle:\n{( " << tri[0] << " ), ( " << tri[1] << " ), ( " << tri[2] << " )}\n\nmatrix before and after Gauss algorithm:\n" << copy << "~\n" << sys << "\n\n";
     throw(range_error("Function::projection_on_P1 : the matrix is not invertible\n"));
   }
 
-  proj[ldgent[0][1]] = res(ldgent[0][0], 3);
-  proj[ldgent[1][1]] = res(ldgent[1][0], 3);
-  proj[ldgent[2][1]] = res(ldgent[2][0], 3);
+  proj[ldgent[0][1]] = sys(ldgent[0][0], 3);
+  proj[ldgent[1][1]] = sys(ldgent[1][0], 3);
+  proj[ldgent[2][1]] = sys(ldgent[2][0], 3);
 
   return proj;
 }
